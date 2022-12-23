@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .App-logo {
@@ -33,55 +33,9 @@
 
   filter: blur(0.5px);
   -webkit-filter: blur(0.5px);
-
-  /* animation: glowing-Button 20s linear infinite;
-  transition: opacity 0.3s ease-in-out; */
 }
 
-/* @keyframes glowing-Text {
-  0% {
-    background: "#ff0000";
-  }
-  12% {
-    background: "#ff7300";
-  }
-  25% {
-    background: "#fffb00";
-  }
-  38% {
-    background: "#48ff00";
-  }
-  50% {
-    background: "#00ffd5";
-  }
-  62% {
-    background: "#002bff";
-  }
-  75% {
-    background: "#7a00ff";
-  }
-  88% {
-    background: "#ff00c8";
-  }
-  100% {
-    background: "#ff0000";
-  }
-} */
-
 .App-body {
-  background: rgb(255, 0, 0);
-  background: linear-gradient(
-    138deg,
-    rgba(255, 0, 0, 0.25) 0%,
-    rgba(255, 115, 0, 0.25) 12.5%,
-    rgba(255, 251, 0, 0.25) 25%,
-    rgba(72, 255, 0, 0.25) 37.5%,
-    rgba(0, 255, 213, 0.25) 50%,
-    rgba(0, 43, 255, 0.25) 62.5%,
-    rgba(122, 0, 255, 0.25) 75%,
-    rgba(255, 0, 200, 0.25) 87.5%,
-    rgba(255, 0, 0, 0.25) 100%
-  );
   min-height: 88vh;
   overflow: hidden;
   padding-block: 0.8rem;
@@ -90,6 +44,21 @@
   align-items: center;
   font-size: calc(10px + 2vmin);
   color: #282c34;
+}
+
+.App-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  list-style-type: none;
+  color: aliceblue;
+}
+
+.App-menu-item {
+  padding-inline: 1rem;
+  color: inherit;
+  text-decoration: none;
 }
 
 .Button {
@@ -196,45 +165,17 @@
     rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
 }
 
-.Address {
-  font-size: 1.8vw;
-  padding: 0.5rem;
-}
-.BalanceAndButton {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-.marginInline {
-  margin-inline: 3rem;
-}
-.Balance {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
 .subtitle {
   color: #808080;
   font-size: 1vw;
 }
+
 .subtitleLarge {
   color: #808080;
   font-size: 1.5vw;
 }
+
 .wrap {
   inline-size: 55vw;
   overflow-wrap: break-word;
-}
-.Balance-number {
-  margin-right: 2rem;
-  font-size: 2vw;
-}
-
-.Hash-number {
-  font-size: 1.8vw;
-}
-.Hash-title {
-  padding: 0.3rem;
 }

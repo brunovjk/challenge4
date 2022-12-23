@@ -23,6 +23,7 @@ interface PhantomProvider {
   isConnected: boolean | null;
   signTransaction: (transaction: Transaction) => Promise<Transaction>;
   signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>;
+  signAndSendTransaction: (transaction: Transaction) => Promise<Transaction[]>;
   signMessage: (
     message: Uint8Array | string,
     display?: DisplayEncoding
