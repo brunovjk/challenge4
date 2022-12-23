@@ -1,32 +1,25 @@
-import { SystemProgram } from "@solana/web3.js";
-// import { createInitializeMintInstruction } from "@solana/spl-token";
-import { sendTxUsingExternalSignature } from "../functions";
-
+import * as web3 from "@solana/web3.js";
+import { buildCreateMintTransaction } from "./mintTokenTransactions";
+import { sendTxUsingExternalSignature } from "./sendTxUsingExternalSignature";
 /**
  * @description  Create Mint Account
  */
-export const createMintAccount = async (from: any) => {
+export const createMintAccount = async (account: any) => {
+  console.log(new web3.PublicKey(account));
+  const connection = new web3.Connection(
+    web3.clusterApiUrl("devnet"),
+    "confirmed"
+  );
   try {
-    // Transaction instructions
-    const instructions = SystemProgram.transfer({
-      fromPubkey: from.publicKey,
-      toPubkey: from.publicKey,
-      lamports: 100000,
-    });
+    const transaction = await buildCreateMintTransaction(
+      connection,
+      new web3.PublicKey(account),
+      9
+    );
 
-    const signature = await sendTxUsingExternalSignature(instructions);
+    const signature = await sendTxUsingExternalSignature(transaction);
     return signature;
   } catch (error: any) {
     return error;
   }
 };
-
-// const mint = await createMint(
-//   connection,
-//   keyPair,
-//   keyPair.publicKey,
-//   null,
-//   9
-// );
-
-// return mint;

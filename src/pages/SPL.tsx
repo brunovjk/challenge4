@@ -7,6 +7,8 @@ import {
   getWalletBalance,
   createMintAccount,
 } from "../functions";
+import * as buffer from "buffer";
+window.Buffer = buffer.Buffer;
 
 export default function SPL() {
   // create state variable for the provider
@@ -84,8 +86,8 @@ export default function SPL() {
    */
   const createSPLTokens = async () => {
     try {
-      if (connectedWallet.account !== undefined) {
-        const signature = await createMintAccount(connectedWallet.account);
+      if (connectedWallet.publicKey !== undefined) {
+        const signature = await createMintAccount(connectedWallet.publicKey);
 
         console.log("signature:", signature);
       }

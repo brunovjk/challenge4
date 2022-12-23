@@ -1,18 +1,16 @@
-import {
-  Connection,
-  Transaction,
-  TransactionInstruction,
-  clusterApiUrl,
-} from "@solana/web3.js";
+import * as web3 from "@solana/web3.js";
 import { getProvider } from "./getProvider";
 
 export const sendTxUsingExternalSignature = async (
-  instructions: TransactionInstruction
+  _transaction: web3.Transaction
 ) => {
   const provider = getProvider();
-  const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+  const connection = new web3.Connection(
+    web3.clusterApiUrl("devnet"),
+    "confirmed"
+  );
 
-  let transaction = new Transaction().add(instructions);
+  let transaction = _transaction;
   // Setting the variables for the transaction
   transaction.feePayer = await provider?.publicKey;
   let blockhashObj = await connection.getLatestBlockhash("max");
