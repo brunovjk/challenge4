@@ -1,6 +1,7 @@
 import {
   Connection,
   clusterApiUrl,
+  PublicKey,
   Transaction,
   SystemProgram,
   sendAndConfirmTransaction,
@@ -16,7 +17,7 @@ export const transferSol = async (amount: any, from: any, to: any) => {
     var transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: from.publicKey,
-        toPubkey: to.publicKey,
+        toPubkey: new PublicKey(to),
         lamports: amount * LAMPORTS_PER_SOL,
       })
     );

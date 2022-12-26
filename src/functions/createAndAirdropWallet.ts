@@ -11,11 +11,10 @@ import {
  */
 const createWallet = async () => {
   try {
-    const createdWallet = Keypair.generate();
-    const publicKey = createdWallet.publicKey.toString();
-    console.log("Created account:", publicKey);
+    const wallet = Keypair.generate();
+    console.log("Created account:", wallet.publicKey.toString());
 
-    return [createdWallet, publicKey];
+    return [wallet, wallet.publicKey.toString()];
   } catch (err: any) {
     console.log(err);
     return err;
@@ -57,10 +56,10 @@ const airdropTwo = async (publicKey: string) => {
  */
 export const createAndAirdropWallet = async () => {
   try {
-    const [createdWallet, publicKey] = await createWallet();
-    const hash = await airdropTwo(publicKey);
+    const [wallet, publicKey] = await createWallet();
+    const airdropHash = await airdropTwo(wallet.publicKey);
 
-    return [createdWallet, publicKey, hash];
+    return [wallet, publicKey, airdropHash];
   } catch (err: any) {
     console.log(err);
     alert(err);

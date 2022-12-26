@@ -9,14 +9,27 @@ type PhantomRequestMethod =
   | "signAllTransactions"
   | "signMessage";
 
+type CreatedWallet = {
+  account: Keypair;
+  balance?: number;
+};
+type ConnectedWallet = {
+  publicKey: PublicKey;
+  balance?: number;
+};
+type ConnectWalletType = {
+  todos: ITodo[];
+  saveTodo: (todo: ITodo) => void;
+  updateTodo: (id: number) => void;
+};
+
+// Interfaces
 interface ConnectOpts {
   onlyIfTrusted: boolean;
 }
-
-// Interfaces
-interface WalletDetails {
-  account: string | undefined;
-  balance: string | undefined;
+interface CreatedAccount {
+  transaction: Transaction;
+  publicKey: PublicKey | null;
 }
 interface PhantomProvider {
   publicKey: PublicKey | null;

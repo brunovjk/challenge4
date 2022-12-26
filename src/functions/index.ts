@@ -5,4 +5,5 @@ export { getWalletBalance } from "./getWalletBalance";
 export { createAndAirdropWallet } from "./createAndAirdropWallet";
 export { transferSol } from "./transferSol";
 export { createMintAccount } from "./createMintAccount";
+export { createTokenAccount } from "./createTokenAccount";
 export { sendTxUsingExternalSignature } from "./sendTxUsingExternalSignature";

@@ -7,7 +7,7 @@ import {
 /**
  * @description  Get the wallet balance from a given public key
  */
-export const getWalletBalance = async (PUBLIC_KEY: string) => {
+export const getWalletBalance = async (PUBLIC_KEY: PublicKey) => {
   // Connect to the Devnet
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
   try {

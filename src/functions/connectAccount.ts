@@ -5,10 +5,9 @@ import { getProvider } from "./getProvider";
 export const connectAccount = async () => {
   const provider = getProvider();
   try {
-    const account = await provider?.connect();
-    console.log("Wallet connected:", account?.publicKey.toString());
-
-    return [account, account?.publicKey.toString()];
+    const publicKey = await provider?.connect();
+    console.log("Wallet connected:", publicKey?.publicKey.toString());
+    return publicKey?.publicKey.toString();
   } catch (err: any) {
     alert(err);
     return err;

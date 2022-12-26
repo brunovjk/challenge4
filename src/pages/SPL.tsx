@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./SPL.css";
+import * as web3 from "@solana/web3.js";
+import * as token from "@solana/spl-token";
 import {
   getProvider,
   connectAccount,
   disconnect,
   getWalletBalance,
   createMintAccount,
+  createTokenAccount,
 } from "../functions";
-import * as buffer from "buffer";
-window.Buffer = buffer.Buffer;
 
 export default function SPL() {
   // create state variable for the provider
@@ -17,12 +18,11 @@ export default function SPL() {
   );
   // create state variable for the connected wallet key
   const [connectedWallet, setConnectedWallet] = useState({
-    account: undefined,
     publicKey: undefined,
     balance: undefined,
   });
   // create state variable for handling last transaction hash
-  const [lastHash, setLastHash] = useState();
+  // const [lastHash, setLastHash] = useState();
   // create state variable control loading button
   const [loading, setLoading] = useState({
     create: false,
@@ -45,10 +45,9 @@ export default function SPL() {
   const connectWallet = async () => {
     setLoading({ ...loading, connect: true });
     try {
-      const [accountObject, publicKey] = await connectAccount();
+      const publicKey = await connectAccount();
       const balance = await getWalletBalance(publicKey);
       setConnectedWallet({
-        account: accountObject,
         publicKey: publicKey,
         balance: balance,
       });
@@ -69,7 +68,6 @@ export default function SPL() {
     try {
       await disconnect();
       setConnectedWallet({
-        account: undefined,
         publicKey: undefined,
         balance: undefined,
       });
@@ -85,11 +83,20 @@ export default function SPL() {
    * This function is called when the Create Tokens to Connected Account button is clicked
    */
   const createSPLTokens = async () => {
+    const connection = new web3.Connection(
+      web3.clusterApiUrl("devnet"),
+      "confirmed"
+    );
     try {
       if (connectedWallet.publicKey !== undefined) {
-        const signature = await createMintAccount(connectedWallet.publicKey);
-
-        console.log("signature:", signature);
+        const mintAccount: web3.PublicKey = await createMintAccount(
+          connectedWallet.publicKey
+        );
+        const tokenAccount: web3.PublicKey = await createTokenAccount(
+          connectedWallet.publicKey,
+          mintAccount
+        );
+        console.log(tokenAccount);
       }
     } catch (err) {
       console.log(err);
@@ -100,7 +107,7 @@ export default function SPL() {
       <div className="Component">
         <button
           className={`Button ${
-            (connectedWallet.account === undefined || loading.connect) &&
+            (connectedWallet.publicKey === undefined || loading.connect) &&
             "disabled"
           }`}
           onClick={createSPLTokens}
@@ -115,12 +122,12 @@ export default function SPL() {
         <div className="Token-details margin1rem">
           <div className="Token-name subtitleLarge">SPLTokenTest</div>
           <div className="Token-creator">
-            ByDC3ejSYkBJPRXdiNGcK7ftgavNUGqrBxBYXCPqH2Nr
+            0000000000000000000000000000000000000000
           </div>
         </div>
         {provider ? (
           <>
-            {connectedWallet.account !== undefined ? (
+            {connectedWallet.publicKey !== undefined ? (
               <button
                 className={`Button margin1rem ${
                   loading.disconnect && "disabled"

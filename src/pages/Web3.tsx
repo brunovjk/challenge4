@@ -9,6 +9,7 @@ import {
   createAndAirdropWallet,
   transferSol,
 } from "../functions";
+
 import * as buffer from "buffer";
 window.Buffer = buffer.Buffer;
 
@@ -25,7 +26,6 @@ function Web3() {
   });
   // create state variable for the connected wallet key
   const [connectedWallet, setConnectedWallet] = useState({
-    account: undefined,
     publicKey: undefined,
     balance: undefined,
   });
@@ -53,10 +53,9 @@ function Web3() {
   const connectWallet = async () => {
     setLoading({ ...loading, connect: true });
     try {
-      const [accountObject, publicKey] = await connectAccount();
+      const publicKey = await connectAccount();
       const balance = await getWalletBalance(publicKey);
       setConnectedWallet({
-        account: accountObject,
         publicKey: publicKey,
         balance: balance,
       });
@@ -77,7 +76,6 @@ function Web3() {
     try {
       await disconnect();
       setConnectedWallet({
-        account: undefined,
         publicKey: undefined,
         balance: undefined,
       });
@@ -96,12 +94,11 @@ function Web3() {
     setLoading({ ...loading, create: true });
 
     try {
-      const [accountObject, publicKey, airdropHash] =
-        await createAndAirdropWallet();
+      const [wallet, publicKey, airdropHash] = await createAndAirdropWallet();
       const balance = await getWalletBalance(publicKey);
       setLastHash(airdropHash);
       setCreatedWallet({
-        account: accountObject,
+        account: wallet,
         publicKey: publicKey,
         balance: balance,
       });
@@ -120,7 +117,6 @@ function Web3() {
     setLoading({ ...loading, transfer: true });
 
     if (
-      connectedWallet.account !== undefined &&
       createdWallet.account !== undefined &&
       connectedWallet.publicKey !== undefined &&
       createdWallet.publicKey !== undefined &&
@@ -131,7 +127,7 @@ function Web3() {
         const transferHash = await transferSol(
           (await getWalletBalance(createdWallet.publicKey)) / 2, // amount
           createdWallet.account, // from
-          connectedWallet.account // to
+          connectedWallet.publicKey // to
         );
         setLastHash(transferHash);
         setCreatedWallet({
@@ -203,7 +199,7 @@ function Web3() {
                 </div>
                 <div className="Balance subtitle">Balance</div>
               </div>
-              {connectedWallet.account !== undefined ? (
+              {connectedWallet.publicKey !== undefined ? (
                 <button
                   className={`Button marginInline ${
                     loading.disconnect && "disabled"
@@ -241,7 +237,7 @@ function Web3() {
       <div className="Component">
         <button
           className={`Button ${
-            (connectedWallet.account === undefined ||
+            (connectedWallet.publicKey === undefined ||
               createdWallet.account === undefined ||
               createdWallet.balance === undefined ||
               createdWallet.balance === 0 ||
