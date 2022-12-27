@@ -9,6 +9,7 @@ import {
   createAndAirdropWallet,
   transferSol,
 } from "../functions";
+import * as web3 from "@solana/web3.js";
 
 import * as buffer from "buffer";
 window.Buffer = buffer.Buffer;
@@ -24,11 +25,9 @@ function Web3() {
     publicKey: undefined,
     balance: undefined,
   });
-  // create state variable for the connected wallet key
-  const [connectedWallet, setConnectedWallet] = useState({
-    publicKey: undefined,
-    balance: undefined,
-  });
+  const [connectedWallet, setConnectedWallet] = useState<
+    ConnectedWallet | undefined
+  >();
   // create state variable for handling last transaction hash
   const [lastHash, setLastHash] = useState();
   // create state variable control loading button
@@ -43,8 +42,20 @@ function Web3() {
     const provider = getProvider();
 
     // if the phantom provider exists, set this as the provider
-    if (provider) setProvider(provider);
-    else setProvider(undefined);
+    if (provider) {
+      setProvider(provider);
+      provider.on("accountChanged", async () => {
+        const balance: number | undefined = await getWalletBalance(
+          provider.publicKey
+        );
+        if (balance !== undefined) {
+          setConnectedWallet({
+            publicKey: provider.publicKey,
+            balance: balance,
+          });
+        }
+      });
+    } else setProvider(undefined);
   }, []);
   /**
    * @description prompts user to connect wallet if it exists.
@@ -53,12 +64,14 @@ function Web3() {
   const connectWallet = async () => {
     setLoading({ ...loading, connect: true });
     try {
-      const publicKey = await connectAccount();
-      const balance = await getWalletBalance(publicKey);
-      setConnectedWallet({
-        publicKey: publicKey,
-        balance: balance,
-      });
+      const publicKey: web3.PublicKey | undefined = await connectAccount();
+      if (publicKey !== undefined) {
+        const balance = await getWalletBalance(publicKey);
+        setConnectedWallet({
+          publicKey: publicKey,
+          balance: balance,
+        });
+      }
     } catch (err) {
       alert(err);
       console.log("Connect error:", err);
@@ -118,7 +131,7 @@ function Web3() {
 
     if (
       createdWallet.account !== undefined &&
-      connectedWallet.publicKey !== undefined &&
+      connectedWallet?.publicKey !== undefined &&
       createdWallet.publicKey !== undefined &&
       createdWallet.balance !== undefined &&
       createdWallet.balance > 0
@@ -184,22 +197,22 @@ function Web3() {
         {provider ? (
           <>
             <div className="Address Component">
-              {connectedWallet.publicKey !== undefined
-                ? connectedWallet.publicKey
+              {connectedWallet?.publicKey !== undefined
+                ? connectedWallet.publicKey.toString()
                 : "----"}
             </div>
 
             <div className="BalanceAndButton Component ">
               <div className="Balance marginInline">
                 <div className="Balance-number">
-                  {connectedWallet.balance !== undefined
-                    ? connectedWallet.balance
+                  {connectedWallet?.balance !== undefined
+                    ? connectedWallet.balance.toString()
                     : "--"}{" "}
                   SOL
                 </div>
                 <div className="Balance subtitle">Balance</div>
               </div>
-              {connectedWallet.publicKey !== undefined ? (
+              {connectedWallet?.publicKey !== undefined ? (
                 <button
                   className={`Button marginInline ${
                     loading.disconnect && "disabled"
@@ -237,7 +250,7 @@ function Web3() {
       <div className="Component">
         <button
           className={`Button ${
-            (connectedWallet.publicKey === undefined ||
+            (connectedWallet?.publicKey === undefined ||
               createdWallet.account === undefined ||
               createdWallet.balance === undefined ||
               createdWallet.balance === 0 ||

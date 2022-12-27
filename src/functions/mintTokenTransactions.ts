@@ -1,5 +1,6 @@
 import * as web3 from "@solana/web3.js";
 import * as token from "@solana/spl-token";
+
 /**
  * @description  transaction demo
  */
@@ -113,11 +114,14 @@ export async function buildCreateAssociatedTokenAccountTransaction(
   connection: web3.Connection,
   payer: web3.PublicKey,
   mint: web3.PublicKey
-): Promise<web3.Transaction> {
+): Promise<CreatedAccount> {
+  const programId = token.TOKEN_PROGRAM_ID;
+
   const associatedTokenAddress = await token.getAssociatedTokenAddress(
     mint,
     payer,
-    false
+    false,
+    programId
   );
 
   let transaction = new web3.Transaction().add(
@@ -125,7 +129,8 @@ export async function buildCreateAssociatedTokenAccountTransaction(
       payer,
       associatedTokenAddress,
       payer,
-      mint
+      mint,
+      programId
     )
   );
 
@@ -135,7 +140,11 @@ export async function buildCreateAssociatedTokenAccountTransaction(
     await connection.getLatestBlockhash("max")
   ).blockhash;
   //  transaction.partialSign(accountKeypair);
-  return transaction;
+  const createdToken: CreatedAccount = {
+    transaction: transaction,
+    publicKey: associatedTokenAddress,
+  };
+  return createdToken;
 }
 /**
  * @description  Mint Tokens transaction
@@ -143,6 +152,7 @@ export async function buildCreateAssociatedTokenAccountTransaction(
 export async function buildMintToTransaction(
   connection: web3.Connection,
   authority: web3.PublicKey,
+  payer: web3.PublicKey,
   mint: web3.PublicKey,
   amount: number,
   destination: web3.PublicKey
@@ -152,7 +162,7 @@ export async function buildMintToTransaction(
   );
 
   // Setting the variables for the transaction
-  transaction.feePayer = authority;
+  transaction.feePayer = payer;
   transaction.recentBlockhash = (
     await connection.getLatestBlockhash("max")
   ).blockhash;

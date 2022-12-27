@@ -14,7 +14,7 @@ function App() {
     <div className="App">
       <Router>
         <header className="App-header">
-          <h2 className="App-logo">Metacrafters Challenge4</h2>
+          <h1 className="App-logo">Metacrafters Challenge4</h1>
           <div className="App-menu">
             <NavLink to="/" className="App-menu-item">
               Home
